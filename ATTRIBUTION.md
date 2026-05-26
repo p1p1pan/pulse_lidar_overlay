@@ -1,12 +1,12 @@
 # 第三方说明
 
-本仓库为在开源项目 **PULSE** 之上提供的扩展补丁，目录结构与 PULSE 主仓库对齐。下列上游项目版权归原作者所有；使用本补丁前请先取得完整 PULSE 工程，并遵守各项目许可证与引用要求。
+本仓库为「基于生成模型的自动驾驶异常行人场景生成与评估」相关实现，在开源项目 **PULSE** 之上开发，目录结构与 PULSE 主仓库对齐。下列上游项目版权归原作者所有；使用前请先取得完整 PULSE 工程，并遵守各项目许可证与引用要求。
 
 ## 1. PULSE
 
 - 仓库：<https://github.com/ZhengyiLuo/PULSE>
 - 论文：*Universal Humanoid Motion Representations for Physics-Based Control*（ICLR 2024 Spotlight）
-- 说明：仿真、模仿学习与 `phc/` 主体代码来自该仓库；本补丁仅覆盖其中列出的部分路径。
+- 说明：仿真、模仿学习与 `phc/` 主体代码来自该仓库；本仓库仅包含本项目修改与新增的部分路径。
 
 ## 2. PHC / human2humanoid（包内精简代码）
 
@@ -22,12 +22,12 @@
 
 - 说明：点云特征与分类依赖 PULSE 工程中常用的 `Pointnet_Pointnet2_pytorch-master`，请按 PULSE 官方文档配置环境。
 
-## 本补丁新增内容（技术摘要）
+## 本项目主要内容（技术摘要）
 
-在遵守上述上游许可的前提下，本仓库主要增加或替换：
+在遵守上述上游许可的前提下，本仓库主要包含：
 
-- LiDAR 射线–网格仿真（`smpl_lidar_scan.py`、`phc/utils/smpl_lidar_sim.py` 等）
-- 点云相关训练配置与 `amp_agent.py` 中的数据集落盘逻辑
-- 可视化与离线工具脚本（`scripts/viz_*`、`gen_standing_lidar.py` 等）
+- 异常行人场景下的 SMPL 姿态驱动与仿真采集（依赖 PULSE `amp_agent` 等）
+- LiDAR 射线–网格点云生成（`smpl_lidar_scan.py`、`phc/utils/smpl_lidar_sim.py` 等）
+- 基于人形分类器的样本筛选、数据集落盘与评估可视化（`pc_anomaly.py`、`viz_*` 等）
 
-公开使用或撰写论文时，请按学术规范引用 PULSE、SMPL 等原始文献与仓库，并说明所使用的外部补丁范围。
+公开使用或撰写论文时，请按学术规范引用 PULSE、SMPL 等原始文献与仓库，并说明所使用的外部代码范围。
