@@ -2,7 +2,6 @@
 
 本仓库为 **覆盖补丁包**，目录层级与官方 [PULSE](https://github.com/ZhengyiLuo/PULSE) 主仓库一致（ICLR 2024 Spotlight，论文主页：<https://www.zhengyiluo.com/PULSE>）。用法：先 clone PULSE，再将**本仓库根目录下的** `scripts/`、`phc/` 等**合并到 PULSE 根目录**（覆盖同名路径）。
 
-> 本 Git 仓库仅包含扩展部分，**不是**完整 PULSE。上传 GitHub 时只推送本文件夹即可。
 
 ## 安装步骤
 
