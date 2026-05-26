@@ -1,0 +1,4 @@
+numpy
+scipy
+smplx
+chumpy==0.70

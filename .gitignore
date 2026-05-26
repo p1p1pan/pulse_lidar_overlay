@@ -1,0 +1,16 @@
+# 本地生成数据，勿提交公开仓库
+**/__pycache__/
+**/.venv/
+*.pyc
+
+output/
+**/lidar_pc/*.npz
+**/pc_smpl_dataset/*.npz
+**/pc_smpl_dataset/smpl_*.npz
+
+# SMPL 模型（需用户自行下载）
+**/SMPL_NEUTRAL.pkl
+**/data/smpl/*.pkl
+
+*.ply
+.DS_Store

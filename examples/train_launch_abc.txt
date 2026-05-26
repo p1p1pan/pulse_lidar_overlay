@@ -1,0 +1,31 @@
+cd /home/pan/PULSE/PULSE
+
+python phc/run_hydra.py \
+  env.task=HumanoidIm \
+  env=env_im \
+  exp_name=pulse_im_pc_anom_reward_localframe_fixbn \
+  robot.real_weight_porpotion_boxes=False \
+  learning=im_z_anom_pc \
+  env.motion_file=sample_data/amass_isaac_standing_upright_slim.pkl \
+  env.num_envs=1 \
+  headless=False \
+  no_log=True \
+  env.save_kin_info=True \
+  learning.params.config.use_seq_rl=False \
+  learning.params.config.minibatch_size=32 \
+  learning.params.config.amp_minibatch_size=32 \
+  learning.params.config.amp_batch_size=32 \
+  learning.params.config.amp_replay_buffer_size=2000 \
+  learning.params.config.amp_obs_demo_buffer_size=2000 \
+  learning.params.config.use_pc_anomaly_loss=False \
+  learning.params.config.pc_debug_check_grad=False \
+  learning.params.config.pc_use_as_reward=True \
+  learning.params.config.pc_reward_coef=10000 \
+  learning.params.config.pc_dataset_save_enable=True \
+  learning.params.config.pc_dataset_save_dir=output/pc_anomaly_dataset \
+  learning.params.config.pc_dataset_save_per_max=0.05 \
+  learning.params.config.pc_dataset_save_mean_max=0.03 \
+  learning.params.config.pc_dataset_save_max_files=5000 \
+  learning.params.config.pc_smpl_save_enable=True \
+  learning.params.config.pc_smpl_save_dir=output/pc_smpl_dataset \
+  learning.params.config.pc_smpl_save_max_files=5000

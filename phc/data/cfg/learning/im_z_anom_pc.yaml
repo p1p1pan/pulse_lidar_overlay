@@ -1,0 +1,166 @@
+params:
+  seed: 0
+
+  algo:
+    name: im_amp
+
+  model:
+    name: amp
+
+  network:
+    name: amp_z
+    separate: True
+
+    space:
+      continuous:
+        mu_activation: None
+        sigma_activation: None
+        mu_init:
+          name: default
+        sigma_init:
+          name: const_initializer
+          val: -1.0
+        fixed_sigma: True
+        learn_sigma: False
+
+    mlp:
+      units: [3096, 2048, 1024]
+      activation: silu
+      d2rl: False
+
+      initializer:
+        name: default
+      regularizer:
+        name: None
+
+    task_mlp:
+      units: [1536, 1024, 512]
+      activation: silu
+      d2rl: False
+
+      initializer:
+        name: default
+      regularizer:
+        name: None
+
+    disc:
+      units: [1024, 512]
+      activation: relu
+
+      initializer:
+        name: default
+
+  load_checkpoint: False
+
+  config:
+    name: Humanoid
+    env_name: rlgpu
+    multi_gpu: False
+    use_seq_rl: True
+    mixed_precision: False
+    normalize_input: True
+    normalize_value: True
+    reward_shaper:
+      scale_value: 1
+    normalize_advantage: True
+    gamma: 0.99
+    tau: 0.95
+    learning_rate: 2e-5
+    lr_schedule: constant
+    score_to_win: 20000
+    max_epochs: 10000000
+    save_best_after: 100
+    save_frequency: 500
+    print_stats: False
+    save_intermediate: True
+    entropy_coef: 0.0
+    truncate_grads: True
+    grad_norm: 50.0
+    ppo: True
+    e_clip: 0.2
+    horizon_length: 32
+    minibatch_size: 16384
+    mini_epochs: 6
+    critic_coef: 5
+    clip_value: False
+
+    bounds_loss_coef: 10
+    amp_obs_demo_buffer_size: 200000
+    amp_replay_buffer_size: 200000
+    amp_replay_keep_prob: 0.01
+    amp_batch_size: 512
+    amp_minibatch_size: 4096
+    disc_coef: 5
+    disc_logit_reg: 0.01
+    disc_grad_penalty: 5
+    disc_reward_scale: 2
+    disc_weight_decay: 0.0001
+    normalize_amp_input: True
+
+    # 偏向怪异姿态：降低模仿奖励权重，让点云异常 loss 主导
+    task_reward_w: 0.5
+    disc_reward_w: 0.2
+
+    amp_dropout: False
+
+    # 单帧点云行人分类：SMPL → 点云 → PointNet++ → 行人/非行人 logits，用于异常 loss
+    use_pc_anomaly_loss: True
+    # 推荐：用奖励塑形把 p_human 直接反馈到 PPO（可与/可替代 use_pc_anomaly_loss）
+    pc_use_as_reward: False
+    pc_reward_coef: 0.4
+    pc_anomaly_loss_coef: 0.4
+    pc_human_class_idx: 1   # 与训练一致：label 1=person，logits[:,1]=人形概率
+    pc_num_points: 1024
+    pc_local_coord: True
+    pc_num_classes: 2
+    pc_temporal_pool: mean
+    pc_backbone: pointnet2
+    pc_feat_dim: 256
+    pc_smpl_model_path: data/smpl
+    # 推荐：先统一到 root 局部坐标，再做分类（降低朝向影响）
+    pc_use_root_local_frame: True
+    # 额外固定轴变换（默认不做；诊断时可改）
+    pc_axis_perm: [0, 1, 2]
+    pc_axis_sign: [1.0, 1.0, 1.0]
+    # 若使用 Pointnet 里 40 类 ModelNet 分类器（含 person）：设为 True 并填下面权重路径
+    pc_use_modelnet40_person: False
+    pc_modelnet40_person_idx: 24
+    pc_classifier_weights: output/pc_classifier/person_vs_rest.pth
+    pc_pointnet_pretrained: null
+    pc_chunk_size: 8
+    # 调试开关：检查 pc_anom_loss 是否真的对策略参数产生梯度
+    pc_debug_check_grad: False
+    pc_debug_check_grad_interval: 50
+
+    # 训练时筛选「非人」点云批次写入 npz（需 pc_use_as_reward=True 同路径已有 kin_dict）
+    # 点云 npz：pc + pc_cls；SMPL 另见 pc_smpl_save_*（单独文件）
+    pc_dataset_save_enable: False
+    pc_dataset_save_dir: output/pc_anomaly_dataset
+    # 另存仅 SMPL 状态（root_pos/root_rot_xyzw/dof_pos/smpl_betas 等），目录与点云不同；筛选条件与上相同
+    pc_smpl_save_enable: False
+    pc_smpl_save_dir: output/pc_smpl_dataset
+    pc_smpl_save_max_files: 5000
+    # 保存条件：每个 env 的 p_human 均 < per_max；若 mean_max>0 则还要求 batch 均值 < mean_max（点云与 smpl 共用）
+    pc_dataset_save_per_max: 0.15
+    pc_dataset_save_mean_max: 0.0
+    pc_dataset_save_max_files: 5000
+
+    # LiDAR 射线–网格点云（与上同筛选；需 pc_use_as_reward + kin_dict；不参与奖励）
+    pc_lidar_save_enable: False
+    pc_lidar_save_dir: output/pc_lidar_dataset
+    pc_lidar_save_max_files: 5000
+    pc_lidar_distance: 10.0
+    pc_lidar_sensor_height: 1.3
+    pc_lidar_lines: 64
+    pc_lidar_fov_up_deg: 2.0
+    pc_lidar_fov_down_deg: -24.9
+    pc_lidar_horizontal_res_deg: 0.5
+    pc_lidar_min_range: 0.2
+    pc_lidar_max_range: 80.0
+    pc_lidar_ray_chunk_size: 256
+    pc_lidar_scan_padding_deg: 1.0
+    pc_lidar_max_envs: 4
+
+    player:
+      games_num: 50000000
+
